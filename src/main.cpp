@@ -154,8 +154,8 @@ void handleDeviceRename(){
 void handleCurrentLEDStatus(){
   String message;
   message = "{\"auto_cycle\":"+String(auto_cycle)+
-  ",\"name\":"+String(deviceName)+
-  ",\"code\":0,\"message\":\"success\"}";
+  ",\"name\":\""+String(deviceName)+
+  "\",\"code\":0,\"message\":\"success\"}";
   server.send(200, "application/json", message);
 }
 // 设备信息
