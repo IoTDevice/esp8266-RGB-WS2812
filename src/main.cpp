@@ -102,7 +102,6 @@ void srv_handle_set() {
     if(server.argName(i) == "m") {
       uint8_t tmp = (uint8_t) strtol(server.arg(i).c_str(), NULL, 10);
       ws2812fx.setMode(tmp % ws2812fx.getModeCount());
-      Serial.print("mode is "); Serial.println(ws2812fx.getModeName(ws2812fx.getMode()));
     }
 
     if(server.argName(i) == "b") {
@@ -114,7 +113,6 @@ void srv_handle_set() {
         uint8_t tmp = (uint8_t) strtol(server.arg(i).c_str(), NULL, 10);
         ws2812fx.setBrightness(tmp);
       }
-      Serial.print("brightness is "); Serial.println(ws2812fx.getBrightness());
     }
 
     if(server.argName(i) == "s") {
@@ -123,7 +121,6 @@ void srv_handle_set() {
       } else {
         ws2812fx.setSpeed(ws2812fx.getSpeed() * 0.8);
       }
-      Serial.print("speed is "); Serial.println(ws2812fx.getSpeed());
     }
 
     if(server.argName(i) == "a") {
@@ -178,13 +175,10 @@ void handleDeviceInfo(){
 }
 
 void setup(){
-  Serial.begin(115200);
-
   modes.reserve(5000);
   modes_setup();
   modes_setup_json();
 
-  Serial.println("WS2812FX setup");
   ws2812fx.init();
   ws2812fx.setMode(DEFAULT_MODE);
   ws2812fx.setColor(DEFAULT_COLOR);
@@ -200,7 +194,6 @@ void setup(){
 
   MDNS.addService("iotdevice", "tcp", HTTP_PORT);
 
-  Serial.println("HTTP server setup");
   server.on("/", srv_handle_index_html);
   server.on("/main.js", srv_handle_main_js);
   server.on("/modes", srv_handle_modes);
@@ -254,12 +247,8 @@ void loop() {
   ws2812fx.service();
 
   if(now - last_wifi_check_time > WIFI_TIMEOUT) {
-    Serial.print("Checking WiFi... ");
     if(WiFi.status() != WL_CONNECTED) {
-      Serial.println("WiFi connection lost. Reconnecting...");
       wifi_setup();
-    } else {
-      Serial.println("OK");
     }
     last_wifi_check_time = now;
   }
@@ -275,7 +264,6 @@ void loop() {
       }
     }
     ws2812fx.setMode(next_mode);
-    Serial.print("mode is "); Serial.println(ws2812fx.getModeName(ws2812fx.getMode()));
     auto_last_change = now;
   }
 }
