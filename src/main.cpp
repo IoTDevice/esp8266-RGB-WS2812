@@ -21,12 +21,10 @@ extern const char main_js[];
 #define DEFAULT_SPEED 1000
 #define DEFAULT_MODE FX_MODE_STATIC
 
-unsigned long auto_last_change = 0;
 unsigned long last_wifi_check_time = 0;
 String modes = "";
 String modes_json = "";
 uint8_t myModes[] = {}; // *** optionally create a custom list of effect/mode numbers
-boolean auto_cycle = false;
 
 WS2812FX ws2812fx = WS2812FX(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
 ESP8266WebServer server(HTTP_PORT);
@@ -122,15 +120,6 @@ void srv_handle_set() {
         ws2812fx.setSpeed(ws2812fx.getSpeed() * 0.8);
       }
     }
-
-    if(server.argName(i) == "a") {
-      if(server.arg(i)[0] == '-') {
-        auto_cycle = false;
-      } else {
-        auto_cycle = true;
-        auto_last_change = 0;
-      }
-    }
   }
   server.send(200, "text/plain", "OK");
 }
@@ -147,14 +136,6 @@ void handleDeviceRename(){
   server.send(200, "application/json", message);
 }
 
-// 当前的LED开关状态API
-void handleCurrentLEDStatus(){
-  String message;
-  message = "{\"auto_cycle\":"+String(auto_cycle)+
-  ",\"name\":\""+String(deviceName)+
-  "\",\"code\":0,\"message\":\"success\"}";
-  server.send(200, "application/json", message);
-}
 // 设备信息
 void handleDeviceInfo(){
   String message;
@@ -197,10 +178,9 @@ void setup(){
   server.on("/", srv_handle_index_html);
   server.on("/main.js", srv_handle_main_js);
   server.on("/modes", srv_handle_modes);
-  server.on("/modes", srv_handle_modes_json);
+  server.on("/modes_json", srv_handle_modes_json);
   server.on("/set", srv_handle_set);
   server.on("/rename", handleDeviceRename);
-  server.on("/status", handleCurrentLEDStatus);
   // about this device
   server.on("/info", handleDeviceInfo);
 
@@ -248,22 +228,9 @@ void loop() {
 
   if(now - last_wifi_check_time > WIFI_TIMEOUT) {
     if(WiFi.status() != WL_CONNECTED) {
-      wifi_setup();
+      // wifi_setup();
+      WiFi.reconnect();
     }
     last_wifi_check_time = now;
-  }
-
-  if(auto_cycle && (now - auto_last_change > 10000)) { // cycle effect mode every 10 seconds
-    uint8_t next_mode = (ws2812fx.getMode() + 1) % ws2812fx.getModeCount();
-    if(sizeof(myModes) > 0) { // if custom list of modes exists
-      for(uint8_t i=0; i < sizeof(myModes); i++) {
-        if(myModes[i] == ws2812fx.getMode()) {
-          next_mode = ((i + 1) < sizeof(myModes)) ? myModes[i + 1] : myModes[0];
-          break;
-        }
-      }
-    }
-    ws2812fx.setMode(next_mode);
-    auto_last_change = now;
   }
 }
