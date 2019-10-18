@@ -136,25 +136,6 @@ void handleDeviceRename(){
   server.send(200, "application/json", message);
 }
 
-// 设备信息
-void handleDeviceInfo(){
-  String message;
-  message = "{\n";
-  message += "\"name\":\""+deviceName +"\",\n";
-  message += "\"model\":\"com.iotserv.devices.rgbaLed\",\n";
-  message += "\"mac\":\""+WiFi.macAddress()+"\",\n";
-  message += "\"id\":\""+String(ESP.getFlashChipId())+"\",\n";
-  message += "\"ui-support\":[\"web\",\"native\"],\n";
-  message += "\"ui-first\":\"native\",\n";
-  message += "\"author\":\"Farry\",\n";
-  message += "\"email\":\"newfarry@126.com\",\n";
-  message += "\"home-page\":\"https://github.com/iotdevice\",\n";
-  message += "\"firmware-respository\":\"https://github.com/iotdevice/esp8266-RGB-WS2812\",\n";
-  message += "\"firmware-version\":\""+version+"\"\n";
-  message +="}";
-  server.send(200, "application/json", message);
-}
-
 void setup(){
   modes.reserve(5000);
   modes_setup();
@@ -174,6 +155,17 @@ void setup(){
   }
 
   MDNS.addService("iotdevice", "tcp", HTTP_PORT);
+  MDNS.addServiceTxt("iotdevice", "tcp", "name", deviceName);
+  MDNS.addServiceTxt("iotdevice", "tcp", "model", "com.iotserv.devices.rgbaLed");
+  MDNS.addServiceTxt("iotdevice", "tcp", "mac", WiFi.macAddress());
+  MDNS.addServiceTxt("iotdevice", "tcp", "id", ESP.getSketchMD5());
+  MDNS.addServiceTxt("iotdevice", "tcp", "ui-support", "web,native");
+  MDNS.addServiceTxt("iotdevice", "tcp", "ui-first", "native");
+  MDNS.addServiceTxt("iotdevice", "tcp", "author", "Farry");
+  MDNS.addServiceTxt("iotdevice", "tcp", "email", "newfarry@126.com");
+  MDNS.addServiceTxt("iotdevice", "tcp", "home-page", "https://github.com/iotdevice");
+  MDNS.addServiceTxt("iotdevice", "tcp", "firmware-respository", "https://github.com/iotdevice/esp8266-RGB-WS2812");
+  MDNS.addServiceTxt("iotdevice", "tcp", "firmware-version", version);
 
   server.on("/", srv_handle_index_html);
   server.on("/main.js", srv_handle_main_js);
@@ -181,8 +173,6 @@ void setup(){
   server.on("/modes_json", srv_handle_modes_json);
   server.on("/set", srv_handle_set);
   server.on("/rename", handleDeviceRename);
-  // about this device
-  server.on("/info", handleDeviceInfo);
 
   server.on("/update", HTTP_POST, []() {
     server.sendHeader("Connection", "close");
