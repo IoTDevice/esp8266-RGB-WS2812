@@ -11,7 +11,7 @@ install:
 script:
 - mkdir build
 - platformio ci --keep-build-dir --build-dir ./build --project-conf=platformio.ini
-  src/main.cpp
+  src/*.cpp
 before_deploy:
 - platformio ci -h
 - ls -a
