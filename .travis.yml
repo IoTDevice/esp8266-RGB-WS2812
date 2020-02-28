@@ -20,7 +20,7 @@ deploy:
   provider: releases
   api_key:
     secure: Rq2IScDV4mXLz0neyPVFRrIyat7Xn2DMo7tIEE0AWiFow6MGElkiueXdJ2Tk752gboJ0s0TFRhUyZkyIG61a2Rgw1de2HJNwh2wO8wIEuo0znoUbv2o3FTfOK/mbFCpElZllcOOctHM1m+1oRC7FQcFFFLMEKCWZ7qXXm7KUB0ppzAbgFHAAI9JpK6s2UJ5pweNtqD0MEkMaCL5wjSGTUU0s8EubqdeKpiZNj9LdtlKnJpp9aZhkuukZ4U8IHACBe2tj/6KOud9XbviyVdp81S5ynU3MKDhHr9B81H6B2XUh4Tl0EAopSFN7i4FkHvmelVrnR1HmAxpK6rXhSQZivJM05ONQbcy+7lo9WhKqoGXdX9p8rnbw08Jb7JsuBehp83sismoH1To7Ox3XmRY8OyoXDiI7jLlEy1PsEbJJtLMSJ4FTm4zNus1H1NeCI8vOop9xkxqZQu6osYL8moG0quUCBgE34N3EuG764Tu/7pIB0kGqQmsVN38wT9acHefhheRdwxBR7toLVwZs8CC+o3JAoNRw1kPDT3j/ya4Auws8ZzR7NZ6KaepJH/AGZI7lJd9mJZ/BLf8y4FdGIjSZJ/37s4kOO/77gWzCIvl8G+1Zg7TiJy/NYnuVTBJG2I6ud8brg164dwgOtW68E4ZTBkFltgm/Ad78H5GGSzH106Q=
-  file: "./build/.pio/build/esp32cam/firmware.bin"
+  file: "./build/.pio/build/d1/firmware.bin"
   skip_cleanup: true
   on:
     repo: IoTDevice/esp8266-RGB-WS2812
